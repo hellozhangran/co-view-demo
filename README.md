@@ -1,5 +1,7 @@
 # koa-swig co-view 库的使用例子
 
+`跑之前别忘了npm install`
+
 ##1. 起因
 1. 最近接手的koa项目，用了swig模板引擎，用了基于koa的`koa-swig`包，发现项目并非直接使用`koa-swig`，而是又用`co-view`包装了一层，这个`co-view`是怎样用的。
 
