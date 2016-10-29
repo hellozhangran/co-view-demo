@@ -48,4 +48,60 @@ module.exports = Router;
 
 ##3. co-view介绍以及使用
 
-首先，co-view是一个组织模板引擎的工具。比如，你的页面中，有的需要swig去解析，有的需要jade去解析，有的需要ejs去解析。如何去配置不同的页面文件，用不同引擎去解析呢，这就是co-view的作用。源码中demo2是例子。
+首先，`co-view`是一个组织模板引擎的工具。比如，你的页面中，有的需要swig去解析，有的需要jade去解析，有的需要ejs去解析。如何去配置不同的页面文件，用不同引擎去解析呢，这就是co-view的作用。源码中demo2是例子。
+
+安装`co-view`的同时，根据你的需要安装`swig` `ejs` `jade`。`co-view`内部会自动去调用他们（后面会讲）。这时候就不需要`koa-swig` `koa-jade`这些了。
+
+上代码，app.js如下
+```
+//比较简单的，主要引入了路由，启动服务
+var koa = require('koa');
+var path = require('path');
+var app = koa();
+var router = require('./router')();
+
+app.use(router.routes());
+app.listen(3001);
+console.log('start server on port : 3001 ....')
+
+```
+主要代码依旧在router.js 如下
+```
+var router = require('koa-router')();
+var view = require('co-view');
+
+const render = view('./views',{
+    default:'swig',//如果不写，默认为jade
+    map:{
+        html:'swig',//指定html文件用swig解析
+        ejs:'ejs',//指定ejs文件用ejs解析
+        jade:'jade',//...
+    }
+});
+
+var Router = function(){
+    router.get('/',function* (next){
+        this.body = yield render('index.html',{name:'Swig'});
+    })
+
+    router.get('/jade',function* (){
+        this.body = yield render('first.jade',{name:'Jade',title:'jade demo'});
+    })
+
+    router.get('/ejs',function* (){
+        this.body = yield render('second.ejs',{name:'Ejs'});
+    })
+
+    return router;
+}
+
+module.exports = Router;
+
+```
+代码很简单了，不解释了。去源码中看下，不行跑一边肯定没问题了。
+
+**最后讲一下开始的疑惑，为何用了swig，也安装了swig包，可代码中一直找不到require('swig')这样的代码呢**
+
+原因就在`co-view`中，去看下`co-view`的源码，其在执行render方法时，调用的另一个包`co-render`，再去看`co-render`的源码，它render的时候会带着指定的参数，调用`consolidate`模块，这个是很多模板引擎的‘大集合’，里面写好了对各种模板的require操作。通过你的参数，指定需要require的具体模板引擎。
+
+over

@@ -9,9 +9,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "co-view": "0.0.1",
     "koa": "^1.2.4",
     "koa-router": "^5.4.0",
     "koa-swig": "^2.2.0",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "co-view": "0.0.1",
+    "ejs": "^2.5.2",
+    "jade": "^1.11.0",
+    "swig": "^1.4.2"
   }
 }
